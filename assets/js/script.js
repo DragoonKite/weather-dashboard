@@ -14,7 +14,7 @@ $("button").on("click", function(){
     searchCriteria.value = "";
 
     //API section on click
-    var apiURL = "api.openweathermap.org/data/2.5/forecast?q=" + sCText + "&appid=1ec4b7941e836b90f16c4552ee588075";
+    var apiURL = "https://api.openweathermap.org/data/2.5/forecast?q=" + sCText + "&appid=1ec4b7941e836b90f16c4552ee588075";
 
     fetch(apiURL).then(function(response){
         if(response.ok){
