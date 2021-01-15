@@ -14,12 +14,22 @@ $("button").on("click", function(){
     searchCriteria.value = "";
 
     //API section on click
-    var apiURL = "https://api.openweathermap.org/data/2.5/forecast?q=" + sCText + "&appid=1ec4b7941e836b90f16c4552ee588075";
+    var apiURL = "https://api.openweathermap.org/data/2.5/forecast?q=" + sCText + "&units=imperial&appid=1ec4b7941e836b90f16c4552ee588075";
 
     fetch(apiURL).then(function(response){
         if(response.ok){
             response.json().then(function(data){
-                console.log(data);
+                var forecastContainer = document.getElementById("5-day-card-container");
+                var forecastDate = moment(String(data.list[0].dt_txt)).format("L");
+                var forecastTemp = data.list[0].main.temp;
+                var forecastHumid = data.list[0].main.humidity;
+                var forecastCover = data.list[0].weather[0].description;
+                
+                var forecast = document.createElement("div");
+                forecast.classList.add("card", "bg-primary", "border-primary", "m-3");
+                forecast.innerHTML = "<h5>" + forecastDate + "</h5><span>" + forecastCover + "</span><span>Temperature: " + forecastTemp + "</span><span>Humidity: " + forecastHumid + "</span>";
+
+                forecastContainer.appendChild(forecast);
             });
         }
         else{
@@ -27,6 +37,10 @@ $("button").on("click", function(){
         };
     });
 });
+
+var displayWeather = function(data){
+    
+};
 
 var loadHistory = function(){
     //load search history if avaialble from localstorage
