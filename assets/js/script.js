@@ -16,9 +16,18 @@ $("button").on("click", function(){
     //clear form
     searchCriteria.value = "";
 
+    pullData(sCText);
+});
+
+$("#history-display").on("click", "p", function(){
+    var selection = $(this)[0].innerHTML;
+    pullData(selection);
+});
+
+var pullData = function(city){
     //API section on click
     
-    var apiURLCurrent = "https://api.openweathermap.org/data/2.5/weather?q=" + sCText + "&units=imperial&appid=1ec4b7941e836b90f16c4552ee588075";
+    var apiURLCurrent = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=imperial&appid=1ec4b7941e836b90f16c4552ee588075";
 
     //Current day weather api used to get the lat/long of selected city
     fetch(apiURLCurrent).then(function(response){
@@ -34,7 +43,7 @@ $("button").on("click", function(){
                         response.json().then(function(data){
                             //Begin current day forecast section
                             //City name and weather icon
-                            $("#searched-city").html(sCText + "<img src='http://openweathermap.org/img/wn/" + data.current.weather[0].icon + "@2x.png' alt='" + data.current.weather[0].description + "'>");
+                            $("#searched-city").html(city + "<img src='http://openweathermap.org/img/wn/" + data.current.weather[0].icon + "@2x.png' alt='" + data.current.weather[0].description + "'>");
                             //Temperature
                             $("#searched-temp").html("Temperature: " + data.current.temp +"\u00B0 F");
                             //Humidity
@@ -95,8 +104,8 @@ $("button").on("click", function(){
             alert("Error: " + response.statusText)
         };
     });   
-});
-
+};
+    
 var loadHistory = function(){
     //load search history if avaialble from localstorage
     searchHistory = JSON.parse(localStorage.getItem('searchHistory'));
