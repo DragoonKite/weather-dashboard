@@ -134,6 +134,9 @@ var displayHistory = function(history){
 
 //save search history to localstorage then update displayed history 
 var saveHistory = function(history){
+    while(searchHistory.length > 10){
+        searchHistory.shift();
+    };
     localStorage.setItem('searchHistory', JSON.stringify(history))
     displayHistory(history);
 };
