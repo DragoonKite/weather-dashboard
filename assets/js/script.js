@@ -8,6 +8,9 @@ $("button").on("click", function(){
     var sCText = searchCriteria.value.trim();
     //add to search history array
     searchHistory.push(sCText);
+    //remove duplicates from search history
+    uniqueHistory = [...new Set(searchHistory)];
+    searchHistory = Array.from(uniqueHistory);
     //save array
     saveHistory(searchHistory);
     //clear form
@@ -29,7 +32,6 @@ $("button").on("click", function(){
                 fetch(apiURLOne).then(function(response){
                     if(response.ok){
                         response.json().then(function(data){
-                            console.log(data)
                             //Begin current day forecast section
                             //City name and weather icon
                             $("#searched-city").html(sCText + "<img src='http://openweathermap.org/img/wn/" + data.current.weather[0].icon + "@2x.png' alt='" + data.current.weather[0].description + "'>");
@@ -57,6 +59,8 @@ $("button").on("click", function(){
                             //End of current day forecast section
 
                             //Begin 5-day forecast section
+                            //clear old 5-day data from screen
+                            $("#5-day-card-container").empty();
                             //create container element for 5 day forecast cards
                             var forecastContainer = document.getElementById("5-day-card-container");
                             //iterate through the data. Each object is +3 hourse so i increaes by 8 to move to the next day
