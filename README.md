@@ -11,6 +11,9 @@ Create a dashboard that allows the user to enter a city name and then pull weath
 ## Contents
 1 html file and an Assets folder. The folder contains a css folder with the style.css sheet (unused), an images folder with screenshots of the website, a js folder with the script.js file.
 
+## Website
+https://dragoonkite.github.io/weather-dashboard/
+
 ![Screenshot](./assets/images/wdash.png)
 
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/DragoonKite/weather-dashboard)
