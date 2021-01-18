@@ -84,7 +84,7 @@ var pullData = function(city){
                                 var forecast = document.createElement("div");
                                 //add the class to the card and the wanted data
                                 forecast.classList.add("card", "bg-primary", "border-primary", "m-3");
-                                forecast.innerHTML = "<h5>" + forecastDate + "</h5><img src='http://openweathermap.org/img/wn/" + forecastCoverIcon + "@2x.png' alt='" + forecastCoverDesc + "'></span><span>Temperature: " + forecastTemp + " \u00B0 F</span><span>Humidity: " + forecastHumid + "%</span>";
+                                forecast.innerHTML = "<h5>" + forecastDate + "</h5><img src='http://openweathermap.org/img/wn/" + forecastCoverIcon + "@2x.png' alt='" + forecastCoverDesc + "'></span><span>Temp: " + forecastTemp + " \u00B0 F</span><span>Humidity: " + forecastHumid + "%</span>";
 
                                 //attach the forecast card to the container element and repeat
                                 forecastContainer.appendChild(forecast);
