@@ -14,53 +14,76 @@ $("button").on("click", function(){
     searchCriteria.value = "";
 
     //API section on click
-    //5 day forcast api
-    var apiURL5 = "https://api.openweathermap.org/data/2.5/forecast?q=" + sCText + "&units=imperial&appid=1ec4b7941e836b90f16c4552ee588075";
-
+    
     var apiURLCurrent = "https://api.openweathermap.org/data/2.5/weather?q=" + sCText + "&units=imperial&appid=1ec4b7941e836b90f16c4552ee588075";
 
-    //5 day forcast display 
-    fetch(apiURL5).then(function(response){
-        if(response.ok){
-            response.json().then(function(data){
-                console.log(data)
-                //create container element for 5 day forecast cards
-                var forecastContainer = document.getElementById("5-day-card-container");
-                //iterate through the data. Each object is +3 hourse so i increaes by 8 to move to the next day
-                for(var i=0; i < data.list.length; i+=8){
-                    var forecastDate = moment(String(data.list[i].dt_txt)).format("L");
-                    var forecastTemp = data.list[i].main.temp;
-                    var forecastHumid = data.list[i].main.humidity;
-                    var forecastCoverIcon = data.list[i].weather[0].icon;
-                    var forecastCoverDesc = data.list[i].weather[0].description;
-                    
-                    //create the individual forecast card element
-                    var forecast = document.createElement("div");
-                    //add the class to the card and the wanted data
-                    forecast.classList.add("card", "bg-primary", "border-primary", "m-3");
-                    forecast.innerHTML = "<h5>" + forecastDate + "</h5><img src='http://openweathermap.org/img/wn/" + forecastCoverIcon + "@2x.png' alt='" + forecastCoverDesc + "'></span><span>Temperature: " + forecastTemp + " \u00B0 F</span><span>Humidity: " + forecastHumid + "%</span>";
-
-                    //attach the forecast card to the container element and repeat
-                    forecastContainer.appendChild(forecast);
-                };
-            });
-        }
-        else{
-            //if api fecth fails, alert the user
-            alert("Error: " + response.statusText)
-        };
-    });
-
-    //Current day weather
+    //Current day weather api used to get the lat/long of selected city
     fetch(apiURLCurrent).then(function(response){
         if(response.ok){
             response.json().then(function(data){
-                console.log(data)
-                $("#searched-city").html(data.name + "<img src='http://openweathermap.org/img/wn/" + data.weather[0].icon + "@2x.png' alt='" + data.weather[0].description + "'>");
-                $("#searched-temp").html("Temperature: " + data.main.temp +"\u00B0 F");
-                $("#searched-hum").html("Humidity: " + data.main.humidity);
-                $("#searched-wind").html("Wind Speed: " + data.wind.speed + " MPH");
+                //lat/long taken and the used in the One Call API
+                var lat = data.coord.lat;
+                var long = data.coord.lon;
+                //One Call API
+                var apiURLOne = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + long + "&exclude=minutely,hourly&units=imperial&appid=1ec4b7941e836b90f16c4552ee588075"
+                fetch(apiURLOne).then(function(response){
+                    if(response.ok){
+                        response.json().then(function(data){
+                            console.log(data)
+                            //Begin current day forecast section
+                            //City name and weather icon
+                            $("#searched-city").html(sCText + "<img src='http://openweathermap.org/img/wn/" + data.current.weather[0].icon + "@2x.png' alt='" + data.current.weather[0].description + "'>");
+                            //Temperature
+                            $("#searched-temp").html("Temperature: " + data.current.temp +"\u00B0 F");
+                            //Humidity
+                            $("#searched-hum").html("Humidity: " + data.current.humidity);
+                            //Wind Speed
+                            $("#searched-wind").html("Wind Speed: " + data.current.wind_speed + " MPH");
+                            //UV Index
+                            var uvBg = "";
+                            var uv = data.current.uvi;
+                            //set background color according to severity of the UV Index
+                            if (uv <= 2){
+                                uvBg = "bg-success>"
+                            }
+                            else if (uv <=7 ){
+                                uvBg = "bg-warning"
+                            }
+                            else{
+                                uvBg = "bg-danger"
+                            };
 
+                            $("#searched-uv").html("UV Index: " + "<span class=" + uvBg + uv + "</span>")
+                            //End of current day forecast section
+
+                            //Begin 5-day forecast section
+                            //create container element for 5 day forecast cards
+                            var forecastContainer = document.getElementById("5-day-card-container");
+                            //iterate through the data. Each object is +3 hourse so i increaes by 8 to move to the next day
+                            for(var i=0; i < 5; i++){
+                                var forecastDate = moment().add(i+1,'d').format("L");
+                                var forecastTemp = data.daily[i].temp.day;
+                                var forecastHumid = data.daily[i].humidity;
+                                var forecastCoverIcon = data.daily[i].weather[0].icon;
+                                var forecastCoverDesc = data.daily[i].weather[0].description;
+                                
+                                //create the individual forecast card element
+                                var forecast = document.createElement("div");
+                                //add the class to the card and the wanted data
+                                forecast.classList.add("card", "bg-primary", "border-primary", "m-3");
+                                forecast.innerHTML = "<h5>" + forecastDate + "</h5><img src='http://openweathermap.org/img/wn/" + forecastCoverIcon + "@2x.png' alt='" + forecastCoverDesc + "'></span><span>Temperature: " + forecastTemp + " \u00B0 F</span><span>Humidity: " + forecastHumid + "%</span>";
+
+                                //attach the forecast card to the container element and repeat
+                                forecastContainer.appendChild(forecast);
+                                //End of 5-Day forecast section
+                            };
+                        });
+                    }
+                    else{
+                        //if api fecth fails, alert the user
+                        alert("Error: " + response.statusText)
+                    };
+                });
             });
         }
         else{
