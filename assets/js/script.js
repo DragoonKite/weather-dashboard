@@ -1,4 +1,5 @@
 var searchHistory = [];
+var lastSearched = "";
 
 $("button").on("click", function(){
     //prevent refresh
@@ -6,13 +7,12 @@ $("button").on("click", function(){
     //get information entered by user
     var searchCriteria = document.querySelector("input");
     var sCText = searchCriteria.value.trim();
+    lastSearched = sCText;
     //add to search history array
     searchHistory.push(sCText);
-    //remove duplicates from search history
-    uniqueHistory = [...new Set(searchHistory)];
-    searchHistory = Array.from(uniqueHistory);
+    
     //save array
-    saveHistory(searchHistory);
+    saveHistory(searchHistory,lastSearched);
     //clear form
     searchCriteria.value = "";
 
@@ -21,6 +21,8 @@ $("button").on("click", function(){
 
 $("#history-display").on("click", "p", function(){
     var selection = $(this)[0].innerHTML;
+    lastSearched = selection;
+    saveHistory(searchHistory, lastSearched);
     pullData(selection);
 });
 
@@ -109,12 +111,20 @@ var pullData = function(city){
 var loadHistory = function(){
     //load search history if avaialble from localstorage
     searchHistory = JSON.parse(localStorage.getItem('searchHistory'));
+    lastSearched = JSON.parse(localStorage.getItem('lastSearched'));
     //set array to empty if nothing in local storage
     if(!searchHistory){
         searchHistory = []
     }
     else{
         displayHistory(searchHistory);
+    };
+
+    if(!lastSearched){
+        lastSearched = ""
+    }
+    else{
+        pullData(lastSearched);
     };
 };
 
@@ -133,11 +143,15 @@ var displayHistory = function(history){
 };
 
 //save search history to localstorage then update displayed history 
-var saveHistory = function(history){
+var saveHistory = function(history,searched){
+    //remove duplicates from search history
+    uniqueHistory = [...new Set(history)];
+    searchHistory = Array.from(uniqueHistory);
     while(searchHistory.length > 10){
         searchHistory.shift();
     };
     localStorage.setItem('searchHistory', JSON.stringify(history))
+    localStorage.setItem('lastSearched', JSON.stringify(searched));
     displayHistory(history);
 };
 
