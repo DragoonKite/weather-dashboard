@@ -146,11 +146,9 @@ var displayHistory = function(history){
 var saveHistory = function(history,searched){
     //remove duplicates from search history
     uniqueHistory = [...new Set(history)];
-    console.log(uniqueHistory);
     searchHistory = Array.from(uniqueHistory);
     while(searchHistory.length > 10){
         searchHistory.shift();
-        console.log(searchHistory);
     };
     localStorage.setItem('searchHistory', JSON.stringify(searchHistory))
     localStorage.setItem('lastSearched', JSON.stringify(searched));
