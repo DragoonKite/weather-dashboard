@@ -152,7 +152,7 @@ var saveHistory = function(history,searched){
         searchHistory.shift();
         console.log(searchHistory);
     };
-    localStorage.setItem('searchHistory', JSON.stringify(history))
+    localStorage.setItem('searchHistory', JSON.stringify(searchHistory))
     localStorage.setItem('lastSearched', JSON.stringify(searched));
     displayHistory(searchHistory);
 };
